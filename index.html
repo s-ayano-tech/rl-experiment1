@@ -230,6 +230,27 @@
         var notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, index) => { var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain(); osc.type = 'triangle'; osc.connect(gain); gain.connect(audioCtx.destination); var noteStart = now + (index * 0.05); osc.frequency.setValueAtTime(freq, noteStart); gain.gain.setValueAtTime(0.06, noteStart); gain.gain.exponentialRampToValueAtTime(0.001, noteStart + 0.15); osc.start(noteStart); osc.stop(noteStart + 0.15); });
         } catch(e) {}
     }
+    // テキストと「色」を受け取って声を分ける関数
+    function speakCharacter(text, color) {
+        if ('speechSynthesis' in window) {
+            let speechText = text.replace(/<br>/g, '')
+                                 .replace(/  /g, 'の箱、') 
+                                 .replace(/\-/g, '')     
+                                 
+            let msg = new SpeechSynthesisUtterance(speechText);
+            msg.lang = 'ja-JP'; 
+            msg.rate = 1.1;     
+            
+            // ★赤と青で声の高さを変える（0.0〜2.0の範囲、標準は1.0）
+            if (color === 'red') {
+                msg.pitch = 1.2; // 赤は高めの声
+            } else if (color === 'blue') {
+                msg.pitch = 0.3; // 青は低めの声
+            }
+            
+            window.speechSynthesis.speak(msg); // 順番にキュー（予約）されて読み上げられます
+        }
+    }
     
     function playSmallLossTone() {
         try { 
@@ -486,7 +507,7 @@
         type: jsPsychHtmlButtonResponse, 
         stimulus: `
             <div class="instruction-wrap">
-                <p>ゲームを始める前に、あなたをサポートしてくれる2人のメンバーを紹介します。</p><p>この2人は、宝箱が表示される前に現れてゲームのアドバイスをしてくれます。<br>ただし間違ってしまうこともあります。</p>
+                <p>ゲームを始める前に、あなたをサポートしてくれる2人のメンバーを紹介します。</p><p>この2人は、宝箱が表示される前に現れてゲームのアドバイスをしてくれます。</p><p>ただし、間違ってしまうこともあります。</p>
             </div>
             <div class="scene-container" style="margin-top: 10px; flex-wrap: nowrap;">
                 <div class="character-box">${getImgHtml(IMG_RED_SRC)}</div>
@@ -511,9 +532,16 @@
         }
     });
 
-    var practice_cue1 = { type: jsPsychHtmlKeyboardResponse, stimulus: function(){ 
+    var practice_cue1 = { 
+        type: jsPsychHtmlKeyboardResponse, 
+        stimulus: function(){ 
             return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">右  -5枚</div>${getImgHtml(experiment_data.accurate_img)}</div></div>`;
-    }, choices: "NO_KEYS", trial_duration: 5000 };
+    }, choices: "NO_KEYS", trial_duration: 5000,
+    on_start: function() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            speakCharacter("右  -5枚", experiment_data.accurate_color);
+        }
+    };
 
     var practice_box1 = {
         type: jsPsychHtmlKeyboardResponse, stimulus: function() {
@@ -572,7 +600,18 @@
         }
     };
     
-    var practice_cue2 = { type: jsPsychHtmlKeyboardResponse, stimulus: function(){ return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">左  -5枚<br></div>${getImgHtml(experiment_data.inaccurate_img)}</div></div>`; }, choices: "NO_KEYS", trial_duration: 5000 };
+    var practice_cue2 = { 
+        type: jsPsychHtmlKeyboardResponse, 
+        stimulus: function(){ return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">左  -5枚<br></div>${getImgHtml(experiment_data.inaccurate_img)}</div></div>`;
+        }, 
+        choices: "NO_KEYS", 
+        trial_duration: 5000,
+        on_start: function() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            speakCharacter("左  -5枚", experiment_data.inaccurate_color);
+        } 
+    
+    };
 
     var practice_box2 = {
         type: jsPsychHtmlKeyboardResponse, stimulus: function() {
@@ -646,7 +685,7 @@
         for(let i=0; i<6; i++) accurate_types.push(2);  
         do { accurate_types = shuffleArray(accurate_types); } while (hasConsecutiveValue(accurate_types, 2));
 
-        // 不正確RPの正確性 (4回正解、16回不正解)
+        // 不正確RPの正確性 (6回正解、24回不正解)
         let inaccurate_types = [];
         for(let i=0; i<6; i++) inaccurate_types.push(4); 
         for(let i=0; i<24; i++) inaccurate_types.push(5);  
@@ -713,6 +752,9 @@
             document.getElementById('trial-counter').style.display = 'block';
             var d = window.current_trial_data;
             document.getElementById('trial-counter').innerText = (trial_cursor + 1) + "/75";
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            let char_color = (d.char === 'inaccurate') ? experiment_data.inaccurate_color : experiment_data.accurate_color;
+            speakCharacter(d.text, char_color);
         }
     };
 
@@ -1011,10 +1053,16 @@
         choices: "NO_KEYS",
         trial_duration: 5000,
         on_start: ()=> { 
-            document.getElementById('cod-overlay').innerHTML = `<div style="color:#333;">次へ</div>`;
-            document.getElementById('cod-overlay').style.visibility = 'visible'; 
+            let overlay = document.getElementById('cod-overlay');
+            overlay.innerHTML = `<div style="color:#ffffff;">次へ</div>`; // ★文字 白
+            overlay.style.background = 'rgba(0, 0, 0, 0.95)'; // ★背景 黒
+            overlay.style.visibility = 'visible'; 
         },
-        on_finish: ()=> document.getElementById('cod-overlay').style.visibility = 'hidden'
+        on_finish: ()=> {
+            let overlay = document.getElementById('cod-overlay');
+            overlay.style.visibility = 'hidden';
+            overlay.style.background = 'rgba(255, 255, 255, 0.95)'; //終わったら元の背景の色へ戻す
+        }   
     };
 
     var training_block = {
@@ -1027,6 +1075,13 @@
     timeline.push(training_block);
 
     timeline.push({ type: jsPsychCallFunction, func: function() { time_data.training_end = Date.now(); } });
+    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap">
+    <p>ここからは、宝箱が開かなくなり、怪物は見えなくなります。</p>
+    <p>怪物は見えませんが、知らないうちに宝箱から出て、コインを盗っています。<br>コインを失わないようにするには、これまでと同じように、怪物の入った宝箱をクリックし続ける必要があります。</p>
+    <p>最終的に失ったコインの枚数は最後に表示されます。</p>
+    <p>これまでと同じように、なるべくコインを失わないようにしてください。</p>
+    <p>準備ができたら「開始」を押してください。</p>
+    </div>`, choices: ['開始'] });   
 
     function generateTestTrials() {
         let trials = [];
@@ -1041,7 +1096,7 @@
         // CaseB専用のサイクルカウンターを用意
         let caseB_cycle = 0; 
 
-        for(let i=0; i<30; i++){
+        for(let i=0; i<15; i++){
             let c = conditions[i];
             let red_val, red_dir, blue_val, blue_dir;
             
@@ -1123,6 +1178,18 @@
             document.getElementById('points').innerText = "？？？";
             document.getElementById('trial-counter').style.display = 'block';
             document.getElementById('trial-counter').innerText = (60 + trial_cursor + 1) + "/75";
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            let d = window.current_trial_data;
+            let red_text = (d.red_dir === 0 ? "左の箱、" : "右の箱、") + d.red_val + "枚";
+            let blue_text = (d.blue_dir === 0 ? "左の箱、" : "右の箱、") + d.blue_val + "枚";
+            // 画面の左側にいるキャラから先に喋らせる
+            if (d.pos === 0) { // posが0なら赤が左
+                speakCharacter(red_text, 'red');
+                speakCharacter(blue_text, 'blue');
+            } else { // posが1なら青が左
+                speakCharacter(blue_text, 'blue');
+                speakCharacter(red_text, 'red');
+            }
         }
     };
 
@@ -1194,7 +1261,7 @@
           let total_lost = total_money + total_money_test;
           return `<div class="instruction-wrap" style="text-align:center;">
               <h2>お疲れ様でした。ゲーム終了です。</h2>
-              <p>あなたは<span style="color:red;font-size:24px;font-weight:bold;">250枚</span>失って、最終的に<span style="color:red;font-size:24px;font-weight:bold;">750枚</span>残しました。</p>
+              <p>あなたは<span style="color:red;font-size:24px;font-weight:bold;">${total_lost}枚</span>失って、最終的に<span style="color:red;font-size:24px;font-weight:bold;">${4000 - total_lost}枚</span>残しました。</p>
           </div>`;
       },
       choices: ['次へ'],
