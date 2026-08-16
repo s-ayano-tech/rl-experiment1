@@ -440,7 +440,7 @@
 
     timeline.push({ 
         type: jsPsychHtmlButtonResponse, 
-        stimulus: `<div class="instruction-wrap"><p>実験参加ありがとうございます。</p><p>最初にコインを 1000枚 差し上げます。</p><p>これから、画面上の宝箱をクリックすることでお金と交換できるコインを失わないようにするゲームを行なってもらいます。<br>コインは、1枚で2円として換算されます。<br>失わずに残ったコインはお金に換えて実験終了後に報酬としてお渡しします。</p></div>`, 
+        stimulus: `<div class="instruction-wrap"><p>実験参加ありがとうございます。</p><p>最初にコインを 4000枚 差し上げます。</p><p>これから、画面上の宝箱をクリックすることでお金と交換できるコインを失わないようにするゲームを行なってもらいます。<br>コインは、2枚で1円として換算されます。<br>失わずに残ったコインはお金に換えて実験終了後に報酬としてお渡しします。</p></div>`, 
         choices: ['次へ'] 
     });
 
@@ -670,7 +670,7 @@
     };
     timeline.push(practice_cue1, practice_box1, practice_cue2, practice_box2);
 
-    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>それでは本番です。</p><p>あなたは今、コインを<span style="color:red;font-size:24px;font-weight:bold;">1000枚</span>持っています。<br>できるだけコインを失わないようにしてください。</p><p>実験終了後に、失わずに残ったコインの枚数が画面に表示されます。</p><p>準備ができたら「開始」を押してください。</p></div>`, choices: ['開始'] });
+    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>それでは本番です。</p><p>あなたは今、コインを<span style="color:red;font-size:24px;font-weight:bold;">4000枚</span>持っています。<br>できるだけコインを失わないようにしてください。</p><p>実験終了後に、失わずに残ったコインの枚数が画面に表示されます。</p><p>準備ができたら「開始」を押してください。</p></div>`, choices: ['開始'] });
 
     function generateTrainingTrials() {
         let trials = [];
