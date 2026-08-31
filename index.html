@@ -501,13 +501,13 @@
     };
     timeline.push(chest_test_trial);
 
-    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>ゲームでは2つの宝箱が画面に表示されます。</p><p>宝箱は30秒間表示され、その間はクリックし続けることができます。</p><p>2つの宝箱は独立していて、一方の宝箱がもう一方の宝箱に依存したり、影響を与えたりすることは一切ありません。</p></div>`, choices: ['次へ'] });
+    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>ゲームでは2つの宝箱が画面に表示されます。</p><p>宝箱は30秒間表示され、その間はクリックし続けることができます。</p><p>2つの宝箱は独立していて、一方の宝箱がもう一方の宝箱に影響を与えたりすることは一切ありません。</p></div>`, choices: ['次へ'] });
 
     timeline.push({ 
         type: jsPsychHtmlButtonResponse, 
         stimulus: `
             <div class="instruction-wrap">
-                <p>ゲームを始める前に、あなたをサポートしてくれる2人のメンバーを紹介します。</p><p>この2人は、宝箱が表示される前に現れてゲームのアドバイスをしてくれます。</p><p>ただし、間違ってしまうこともあります。</p>
+                <p>ゲームを始める前に、あなたをサポートしてくれる2人のメンバーを紹介します。</p><p>この2人は、宝箱が表示される前に現れてゲームのアドバイスをしてくれます。</p><p>ただし、いつも正しいとは限りません。</p>
             </div>
             <div class="scene-container" style="margin-top: 10px; flex-wrap: nowrap;">
                 <div class="character-box">${getImgHtml(IMG_RED_SRC)}</div>
