@@ -240,10 +240,10 @@
             let msg = new SpeechSynthesisUtterance(speechText);
             msg.lang = 'ja-JP'; 
             msg.rate = 1.1;     
-            
+            msg.volume = 0.15;
             // ★赤と青で声の高さを変える（0.0〜2.0の範囲、標準は1.0）
             if (color === 'red') {
-                msg.pitch = 1.2; // 赤は高めの声
+                msg.pitch = 1.5; // 赤は高めの声
             } else if (color === 'blue') {
                 msg.pitch = 0.3; // 青は低めの声
             }
@@ -440,14 +440,14 @@
 
     timeline.push({ 
         type: jsPsychHtmlButtonResponse, 
-        stimulus: `<div class="instruction-wrap"><p>実験参加ありがとうございます。</p><p>最初にコインを 4000枚 差し上げます。</p><p>これから、画面上の宝箱をクリックすることでお金と交換できるコインを失わないようにするゲームを行なってもらいます。<br>コインは、2枚で1円として換算されます。<br>失わずに残ったコインはお金に換えて実験終了後に報酬としてお渡しします。</p></div>`, 
+        stimulus: `<div class="instruction-wrap"><p>実験参加ありがとうございます。</p><p>最初にコインを 1000枚 差し上げます。</p><p>これから、画面上の宝箱をクリックすることでお金と交換できるコインを失わないようにするゲームを行なってもらいます。<br>コインは、1枚で1円として換算されます。<br>失わずに残ったコインはお金に換えて実験終了後に報酬としてお渡しします。</p></div>`, 
         choices: ['次へ'] 
     });
 
     var chest_test_trial = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `
-            <div class="instruction-wrap"><p>これは宝箱です。</p><p>ただし偽物に注意してください。偽物の宝箱が開いてしまうと怪物にコインを盗られ、コインを 5枚 または 20枚 失ってしまいます。<br>偽物の宝箱が開かないようにするには、宝箱をクリックし続ける必要があります。</p><p>試しに、この偽物の宝箱をクリックして開かないようにしてみてください。<br>(ここではコインを獲得したり、失ったりすることはありません。)</p><p>宝箱をクリックすると音が鳴ります。音が聞こえない場合は実験を中断して実験者にお知らせください。</p></div>
+            <div class="instruction-wrap"><p>これは宝箱です。</p><p>ただし偽物に注意してください。偽物の宝箱が開いてしまうと怪物にコインを盗られ、コインを 1枚 または 4枚 失ってしまいます。<br>偽物の宝箱が開かないようにするには、宝箱をクリックし続ける必要があります。</p><p>試しに、この偽物の宝箱をクリックして開かないようにしてみてください。<br>(ここではコインを獲得したり、失ったりすることはありません。)</p><p>宝箱をクリックすると音が鳴ります。音が聞こえない場合は実験を中断して実験者にお知らせください。</p></div>
             <div class="chest-container" style="gap:20px;">
                 <div class="chest-btn" id="t-btn1"><img src="${IMG_CHEST_CLOSED}" id="t-img1" class="chest-img"></div>
             </div>
@@ -459,7 +459,7 @@
             let next_open_time = Date.now() + (test_vi_intervals.shift() * 1000);
             
             let dangerous_side = 0; // 左（t-btn1）を危険な宝箱とする
-            let dangerous_val = 5;
+            let dangerous_val = 1;
 
             // ★裏で回るタイマー（時間経過で自動で開く）
             window.avoidanceIntervalTest = setInterval(() => {
@@ -535,11 +535,11 @@
     var practice_cue1 = { 
         type: jsPsychHtmlKeyboardResponse, 
         stimulus: function(){ 
-            return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">右  -5枚</div>${getImgHtml(experiment_data.accurate_img)}</div></div>`;
+            return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">右  -1枚</div>${getImgHtml(experiment_data.accurate_img)}</div></div>`;
     }, choices: "NO_KEYS", trial_duration: 5000,
     on_start: function() {
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            speakCharacter("右  -5枚", experiment_data.accurate_color);
+            speakCharacter("右  -1枚", experiment_data.accurate_color);
         }
     };
 
@@ -547,7 +547,7 @@
         type: jsPsychHtmlKeyboardResponse, stimulus: function() {
             let img = experiment_data.accurate_img;
             return `<div class="game-wrapper" style="justify-content: flex-start; padding-top: 8vh;">
-                      <div class="mini-scene" style="flex-wrap: nowrap;"><div class="character-box"><div class="speech-bubble">右   -5枚</div>${getImgHtml(img)}</div></div>
+                      <div class="mini-scene" style="flex-wrap: nowrap;"><div class="character-box"><div class="speech-bubble">右   -1枚</div>${getImgHtml(img)}</div></div>
                       <div class="chest-container" style="margin-top: 5vh;"><div class="chest-btn" id="btn-L"><img src="${IMG_CHEST_CLOSED}" id="img-L" class="chest-img"></div><div class="chest-btn" id="btn-R"><img src="${IMG_CHEST_CLOSED}" id="img-R" class="chest-img"></div></div>
                       <br><button id="fin-btn" class="jspsych-btn">終了して次へ</button>
                     </div>`;
@@ -602,13 +602,13 @@
     
     var practice_cue2 = { 
         type: jsPsychHtmlKeyboardResponse, 
-        stimulus: function(){ return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">左  -5枚<br></div>${getImgHtml(experiment_data.inaccurate_img)}</div></div>`;
+        stimulus: function(){ return `<div class="cue-wrapper"><div class="character-box"><div class="speech-bubble">左  -1枚<br></div>${getImgHtml(experiment_data.inaccurate_img)}</div></div>`;
         }, 
         choices: "NO_KEYS", 
         trial_duration: 5000,
         on_start: function() {
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            speakCharacter("左  -5枚", experiment_data.inaccurate_color);
+            speakCharacter("左  -1枚", experiment_data.inaccurate_color);
         } 
     
     };
@@ -617,7 +617,7 @@
         type: jsPsychHtmlKeyboardResponse, stimulus: function() {
             let img = experiment_data.inaccurate_img;
             return `<div class="game-wrapper" style="justify-content: flex-start; padding-top: 8vh;">
-                      <div class="mini-scene" style="flex-wrap: nowrap;"><div class="character-box"><div class="speech-bubble">左  -5枚</div>${getImgHtml(img)}</div></div>
+                      <div class="mini-scene" style="flex-wrap: nowrap;"><div class="character-box"><div class="speech-bubble">左  -1枚</div>${getImgHtml(img)}</div></div>
                       <div class="chest-container" style="margin-top: 5vh;"><div class="chest-btn" id="btn-L"><img src="${IMG_CHEST_CLOSED}" id="img-L" class="chest-img"></div><div class="chest-btn" id="btn-R"><img src="${IMG_CHEST_CLOSED}" id="img-R" class="chest-img"></div></div>
                       <br><button id="fin-btn" class="jspsych-btn">終了して次へ</button>
                     </div>`;
@@ -670,7 +670,7 @@
     };
     timeline.push(practice_cue1, practice_box1, practice_cue2, practice_box2);
 
-    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>それでは本番です。</p><p>あなたは今、コインを<span style="color:red;font-size:24px;font-weight:bold;">4000枚</span>持っています。<br>できるだけコインを失わないようにしてください。</p><p>実験終了後に、失わずに残ったコインの枚数が画面に表示されます。</p><p>準備ができたら「開始」を押してください。</p></div>`, choices: ['開始'] });
+    timeline.push({ type: jsPsychHtmlButtonResponse, stimulus: `<div class="instruction-wrap"><p>それでは本番です。</p><p>あなたは今、コインを<span style="color:red;font-size:24px;font-weight:bold;">1000枚</span>持っています。<br>できるだけコインを失わないようにしてください。</p><p>実験終了後に、失わずに残ったコインの枚数が画面に表示されます。</p><p>準備ができたら「開始」を押してください。</p></div>`, choices: ['開始'] });
 
     function generateTrainingTrials() {
         let trials = [];
@@ -695,17 +695,17 @@
             // ① 正確な人のデータを一旦変数にまとめる
             let dl = accurate_dirs[i];
             let tl = accurate_types[i];
-            let txtL = (dl === 0 ? "左  -5枚" : "右  -5枚"); // ※利益版なら +5枚 にする
-            let rewLL = (tl === 1 ? (dl === 0 ? 5 : 0) : (dl === 0 ? 0 : 5));
-            let rewLR = (tl === 1 ? (dl === 0 ? 0 : 5) : (dl === 0 ? 5 : 0));
+            let txtL = (dl === 0 ? "左  -1枚" : "右  -1枚"); 
+            let rewLL = (tl === 1 ? (dl === 0 ? 1 : 0) : (dl === 0 ? 0 : 1));
+            let rewLR = (tl === 1 ? (dl === 0 ? 0 : 1) : (dl === 0 ? 1 : 0));
             let acc_trial = { char: 'accurate', text: txtL, rewL: rewLL, rewR: rewLR, cycle: i + 1, block: Math.ceil((i + 1) / 5) };
 
             // ② 不正確な人のデータを一旦変数にまとめる
             let dr = inaccurate_dirs[i];
             let tr = inaccurate_types[i];
-            let txtR = (dr === 0 ? "左  -5枚" : "右  -5枚"); // ※利益版なら +5枚 にする
-            let rewRL = (tr === 4 ? (dr === 0 ? 5 : 0) : (dr === 0 ? 0 : 5));
-            let rewRR = (tr === 4 ? (dr === 0 ? 0 : 5) : (dr === 0 ? 5 : 0));
+            let txtR = (dr === 0 ? "左  -1枚" : "右  -1枚"); 
+            let rewRL = (tr === 4 ? (dr === 0 ? 1 : 0) : (dr === 0 ? 0 : 1));
+            let rewRR = (tr === 4 ? (dr === 0 ? 0 : 1) : (dr === 0 ? 1 : 0));
             let inacc_trial = { char: 'inaccurate', text: txtR, rewL: rewRL, rewR: rewRR, cycle: i + 1, block: Math.ceil((i + 1) / 5) };
             
             // ③ ★50%の確率で順番を入れ替えて push する
@@ -897,7 +897,7 @@
                             el.src = IMG_CHEST_OPEN;
                             setTimeout(() => el.src = IMG_CHEST_CLOSED, 3000);
                         }
-                        playAudio(dangerous_val === 5 ? 'loss_small' : 'loss_large');
+                        playAudio(dangerous_val === 1 ? 'loss_small' : 'loss_large');
                         total_money += dangerous_val; 
                         document.getElementById('points').innerText = total_money + "枚";
                         window.cycle_stats.points_lost += dangerous_val; 
@@ -1085,7 +1085,7 @@
 
     function generateTestTrials() {
         let trials = [];
-        // 0: 赤-20(左), 青-5(右) / 1: 赤-20(右), 青-5(左) / 2: 青-20(左), 赤-5(右) / 3: 青-20(右), 赤-5(左)
+        // 0: 赤-4(左), 青-1(右) / 1: 赤-4(右), 青-1(左) / 2: 青-4(左), 赤-1(右) / 3: 青-4(右), 赤-1(左)
         let conditions = [];
         for(let i=0; i<5; i++) conditions.push('CaseA');
         for(let i=0; i<10; i++) conditions.push('CaseB');
@@ -1105,19 +1105,19 @@
 
             if (c === 'CaseA') {
                 if (is_red_accurate) {
-                    red_val = 20;
-                    blue_val = 5;
+                    red_val = 4;
+                    blue_val = 1;
                 } else {
-                    red_val = 5;
-                    blue_val = 20;
+                    red_val = 1;
+                    blue_val = 4;
                 }
             } else if (c === 'CaseB') {
                 if (is_red_accurate) {
-                    red_val = 5;
-                    blue_val = 20;
+                    red_val = 1;
+                    blue_val = 4;
                 } else {
-                    red_val = 20;
-                    blue_val = 5;
+                    red_val = 4;
+                    blue_val = 1;
                 }
             }
 
@@ -1180,8 +1180,8 @@
             document.getElementById('trial-counter').innerText = (60 + trial_cursor + 1) + "/75";
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             let d = window.current_trial_data;
-            let red_text = (d.red_dir === 0 ? "左の箱、" : "右の箱、") + d.red_val + "枚";
-            let blue_text = (d.blue_dir === 0 ? "左の箱、" : "右の箱、") + d.blue_val + "枚";
+            let red_text = (d.red_dir === 0 ? "左" : "右") + d.red_val + "枚";
+            let blue_text = (d.blue_dir === 0 ? "左" : "右") + d.blue_val + "枚";
             // 画面の左側にいるキャラから先に喋らせる
             if (d.pos === 0) { // posが0なら赤が左
                 speakCharacter(red_text, 'red');
