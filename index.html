@@ -234,7 +234,6 @@
     function speakCharacter(text, color) {
         if ('speechSynthesis' in window) {
             let speechText = text.replace(/<br>/g, '')
-                                 .replace(/  /g, 'の箱、') 
                                  .replace(/\-/g, '')     
                                  
             let msg = new SpeechSynthesisUtterance(speechText);
@@ -559,7 +558,7 @@
             let next_open_time = Date.now() + (test_vi_intervals.shift() * 1000);
             
             let dangerous_side = 1; // 右が危険
-            let dangerous_val = 5;
+            let dangerous_val = 1;
 
             // ★裏で回るタイマー（時間経過で自動で失う）
             window.avoidanceInterval = setInterval(() => {
@@ -627,7 +626,7 @@
             let next_open_time = Date.now() + (test_vi_intervals.shift() * 1000);
             
             let dangerous_side = 0; // 左が危険
-            let dangerous_val = 5;
+            let dangerous_val = 1;
 
             // ★裏で回るタイマー
             window.avoidanceInterval = setInterval(() => {
